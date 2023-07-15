@@ -59,20 +59,31 @@ func (l *DistributedLog) setupRaft(dataDir string) error {
 		return err
 	}
 
-	stableStore, err := raftboltdb.NewBoltStore(filepath.Join(dataDir, "raft", "stable"))
+	stableStore, err := raftboltdb.NewBoltStore(
+		filepath.Join(dataDir, "raft", "stable"),
+	)
 	if err != nil {
 		return err
 	}
 
 	retain := 1
-	snapshotStore, err := raft.NewFileSnapshotStore(filepath.Join(dataDir, "raft"), retain, os.Stderr)
+	snapshotStore, err := raft.NewFileSnapshotStore(
+		filepath.Join(dataDir, "raft"),
+		retain,
+		os.Stderr,
+	)
 	if err != nil {
 		return err
 	}
 
 	maxPool := 5
 	timeout := 10 * time.Second
-	transport := raft.NewNetworkTransport(l.config.Raft.StreamLayer, maxPool, timeout, os.Stderr)
+	transport := raft.NewNetworkTransport(
+		l.config.Raft.StreamLayer,
+		maxPool,
+		timeout,
+		os.Stderr,
+	)
 
 	config := raft.DefaultConfig()
 	config.LocalID = l.config.Raft.LocalID
@@ -100,22 +111,25 @@ func (l *DistributedLog) setupRaft(dataDir string) error {
 	if err != nil {
 		return err
 	}
-
-	hasState, err := raft.HasExistingState(logStore, stableStore, snapshotStore)
+	hasState, err := raft.HasExistingState(
+		logStore,
+		stableStore,
+		snapshotStore,
+	)
 	if err != nil {
 		return err
 	}
-
 	if l.config.Raft.Bootstrap && !hasState {
 		config := raft.Configuration{
-			Servers: []raft.Server{
-				{ID: config.LocalID, Address: transport.LocalAddr()},
-			},
+			Servers: []raft.Server{{
+				ID:      config.LocalID,
+				Address: transport.LocalAddr(),
+			}},
 		}
 		err = l.raft.BootstrapCluster(config).Error()
 	}
-
 	return err
+
 }
 
 func (l *DistributedLog) Append(record *api.Record) (uint64, error) {

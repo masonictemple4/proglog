@@ -1,3 +1,5 @@
+// DEPRECATED: This file is no longer used, because Raft now handles replication.
+// Keeping this here for example of basic replication if implemented manually.
 package log
 
 import (
