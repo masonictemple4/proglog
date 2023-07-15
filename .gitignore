@@ -1,0 +1,4 @@
+test/ca-config.json
+test/ca-csr.json
+test/client-csr.json
+test/server-csr.json
