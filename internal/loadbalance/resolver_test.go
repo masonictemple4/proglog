@@ -1,6 +1,7 @@
 package loadbalance
 
 import (
+	"fmt"
 	"net"
 	"net/url"
 	"testing"
@@ -53,10 +54,8 @@ func TestResolver(t *testing.T) {
 	}
 
 	r := &Resolver{}
-	// Add prefix here because it will throw an error because of the colon for port.
-	// According to the docs here https://github.com/grpc/grpc/blob/master/doc/naming.md
-	// The default scheme is dns:// more docs can be found by jumping to the source code for grpc.Dial
-	endpoint, err := url.Parse("dns:///" + l.Addr().String())
+	route := fmt.Sprintf("%s:///%s", r.Scheme(), l.Addr().String())
+	endpoint, err := url.Parse(route)
 	require.NoError(t, err)
 
 	_, err = r.Build(
