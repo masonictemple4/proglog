@@ -24,8 +24,9 @@ import (
 )
 
 type Config struct {
-	CommitLog  CommitLog
-	Authorizer Authorizer
+	CommitLog   CommitLog
+	Authorizer  Authorizer
+	GetServerer GetServerer
 }
 
 const (
@@ -108,6 +109,21 @@ func (s *grpcServer) ConsumeStream(req *api.ConsumeRequest, stream api.Log_Consu
 			req.Offset++
 		}
 	}
+}
+
+func (s *grpcServer) GetServers(ctx context.Context, req *api.GetServersRequest) (*api.GetServersResponse, error) {
+	servers, err := s.GetServerer.GetServers()
+	if err != nil {
+		return nil, err
+	}
+	return &api.GetServersResponse{Servers: servers}, nil
+}
+
+// Enables us to inject different structs that can get servers. WE don't want to add
+// the GetServers method to the CommitLog interface because it's a non-distributed log so it doesn't
+// know about other servers.
+type GetServerer interface {
+	GetServers() ([]*api.Server, error)
 }
 
 // An interface that abstracts us away from one specific log implementation i.e an in-memory or disk based.
