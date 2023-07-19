@@ -6,8 +6,8 @@ metadata:
   labels: {{ include "proglog.labels" . | nindent 4 }}
 spec:
   selector:
-    matchLabels: {{ include "proglog.selectorLabels" . nindent 6 }}
-  serviceName: {{ include"proglog.fullname" . }}
+    matchLabels: {{ include "proglog.selectorLabels" . | nindent 6 }}
+  serviceName: {{ include "proglog.fullname" . }}
   replicas: {{ .Values.replicas }}
   template:
     metadata:
@@ -36,7 +36,7 @@ spec:
       containers:
       - name: {{ include "proglog.fullname" . }}
         image: "{{ .Values.image.repository}}:{{ .Values.image.tag }}"
-        prorts:
+        ports:
         - containerPort: {{ .Values.rpcPort }}
           name: rpc
         - containerPort: {{ .Values.serfPort }}

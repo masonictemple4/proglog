@@ -5,8 +5,8 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels: {{ include "proglog.labels" . | nindent 4 }}
 spec:
-  cluserIP: None
-  publushNotReadyAddresses: true
+  clusterIP: None
+  publishNotReadyAddresses: true
   ports:
     - name: rpc
       port: {{ .Values.rpcPort }}
