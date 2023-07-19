@@ -1,7 +1,7 @@
 # Default values for proglog.
 image:
   repository: github.com/masonictemple4/proglog
-  tags: 0.0.1
+  tag: 0.0.1
   pullPolicy: IfNotPresent
 serfPort: 8401
 rpcPort: 8400
