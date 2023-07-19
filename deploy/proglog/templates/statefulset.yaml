@@ -49,7 +49,7 @@ spec:
             command: ["/bin/grpc_health_probe", "-addr=:{{ .Values.rpcPort }}"]
           initialDelaySeconds: 10
         livenessProbe:
-          exect:
+          exec:
             command: ["/bin/grpc_health_probe", "-addr=:{{ .Values.rpcPort }}"]
           initialDelaySeconds: 10
         volumeMounts:
