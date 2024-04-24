@@ -75,36 +75,34 @@ func (i *index) Close() error {
 	return i.file.Close()
 }
 
-// Read takes an offset and returns the records associated position
-// in the store.
-// The given offset is relative to the segment's base offset; Using
-// relative offsets reduce the size of the indexes by storing them as
-// uint32s.
-func (i *index) Read(in int64) (out uint32, pos uint64, err error) {
+// Read takes an offset that is relative to the segment's base offset;
+// and returns the records associated position in the store.
+// Because we're using a relative offset we can store them as uint32s
+func (i *index) Read(in int64) (off uint32, pos uint64, err error) {
 	if i.size == 0 {
 		return 0, 0, io.EOF
 	}
 
 	// Check for last
 	if in == -1 {
-		out = uint32((i.size / entWidth) - 1)
+		off = uint32((i.size / entWidth) - 1)
 	} else {
-		out = uint32(in)
+		off = uint32(in)
 	}
 
 	// Set position to the given offset.
-	pos = uint64(out) * entWidth
+	pos = uint64(off) * entWidth
 
 	if i.size < pos+entWidth {
 		return 0, 0, io.EOF
 	}
 
 	// Get offset
-	out = enc.Uint32(i.mmap[pos : pos+offWidth])
+	off = enc.Uint32(i.mmap[pos : pos+offWidth])
 	// Get position
 	pos = enc.Uint64(i.mmap[pos+offWidth : pos+entWidth])
 
-	return out, pos, nil
+	return off, pos, nil
 }
 
 // Write appends the given offset and position to the index.
