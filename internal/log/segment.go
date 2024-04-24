@@ -53,7 +53,7 @@ func newSegment(dir string, baseOffset uint64, conf Config) (*segment, error) {
 }
 
 // Append writes the record segment and returns the newly appended
-// records offset. The log returns the offset to the API response.
+// records offset. The log returns the records offset to the API response.
 func (s *segment) Append(record *api.Record) (offset uint64, err error) {
 	curOff := s.nextOffset
 	record.Offset = curOff
