@@ -39,6 +39,7 @@ func newStore(f *os.File) (*store, error) {
 	}, nil
 }
 
+// Append persists bytes passed to it in the store.
 func (s *store) Append(p []byte) (n uint64, pos uint64, err error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -46,7 +47,7 @@ func (s *store) Append(p []byte) (n uint64, pos uint64, err error) {
 	// Start of our data record.
 	pos = s.size
 
-	// Write data size
+	// Write data size so we know how much to read when reading.
 	if err := binary.Write(s.buf, enc, uint64(len(p))); err != nil {
 		return 0, 0, err
 	}
