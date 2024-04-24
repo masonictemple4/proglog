@@ -83,19 +83,13 @@ func (s *segment) Append(record *api.Record) (offset uint64, err error) {
 func (s *segment) Read(off uint64) (*api.Record, error) {
 	_, pos, err := s.index.Read(int64(off - s.baseOffset))
 	if err != nil {
-		fmt.Printf("error reading in segment - read after index: %v\n", err)
 		return nil, err
 	}
-
-	fmt.Printf("segment index read data: %d\n", pos)
 
 	rData, err := s.store.Read(pos)
 	if err != nil {
-		fmt.Printf("error reading in segment - read after store: %v\n", err)
 		return nil, err
 	}
-
-	fmt.Printf("segment read data: %s\n", string(rData))
 
 	record := &api.Record{}
 	err = proto.Unmarshal(rData, record)

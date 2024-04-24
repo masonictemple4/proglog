@@ -2,7 +2,6 @@ package server
 
 import (
 	"context"
-	"fmt"
 
 	api "github.com/masonictemple4/proglog/api/v1"
 	"google.golang.org/grpc"
@@ -28,12 +27,9 @@ func newgrpcServer(conf *Config) (*grpcServer, error) {
 
 func (s *grpcServer) Produce(ctx context.Context, req *api.ProduceRequest) (*api.ProduceResponse, error) {
 
-	println("Are we even hit????")
-	fmt.Printf("The object from the request: %s\n", string(req.Record.Value))
 	offset, err := s.CommitLog.Append(req.Record)
 
 	if err != nil {
-		fmt.Printf("Error writing: %v\n", err)
 		return nil, err
 	}
 
@@ -44,7 +40,6 @@ func (s *grpcServer) Consume(ctx context.Context, req *api.ConsumeRequest) (*api
 
 	record, err := s.CommitLog.Read(req.Offset)
 	if err != nil {
-		fmt.Printf("Error reading: %v\n", err)
 		return nil, err
 	}
 
